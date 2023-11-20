@@ -17,6 +17,7 @@ public class Game {
             return betting();
         }
         GameState gameState = GameState.DOING;
+        int nextBet = -1;
         while (gameState.equals(GameState.DOING)) {
             user.getCard(deck.pollLast());
             printNowUserState();
@@ -24,22 +25,44 @@ public class Game {
             if (gameState.equals(GameState.LOSE)) {
                 user.minusMoney(betMoney);
                 printGameOver(gameState);
+                if (isOneMoreGame()) {
+                    nextBet = betting();
+                }
+                continue;
             }
             if (dealer.sumCards() <= 16) dealer.getCard(deck.pollLast());
+            if (!isGetOneMoreCard()) {
+                gameState = GameState.DONE;
+                while (dealer.sumCards() <= 16) dealer.getCard(deck.pollLast());
+            }
         }
 
+
+
+        return nextBet;
     }
 
-    private boolean isOneMoreGame() throws IOException{
+    private GameState checkGameResult() {
+        GameState result;
+        if (dealer.sumCards() == 21) result = GameState.LOSE;
+        else if()
+    }
+
+    private boolean isGetOneMoreCard() throws IOException{
+        return getYOrN("카드를 더 받겠습니까? ");
+    }
+
+    private boolean getYOrN(String message) throws IOException {
         String input;
         boolean correctInput = false;
         boolean result = false;
         while (!correctInput) {
+            System.out.print(message);
             input = userInput();
-            if (input.equals("y")) {
+            if (input.equals("y") || input.equals("Y")) {
                 result = true;
                 correctInput = true;
-            } else if (input.equals("n")) {
+            } else if (input.equals("n") || input.equals("N")) {
                 result = false;
                 correctInput = true;
             }else{
@@ -47,6 +70,10 @@ public class Game {
             }
         }
         return result;
+    }
+
+    private boolean isOneMoreGame() throws IOException{
+        return getYOrN("한 게임 더 하시겠습니까? ");
     }
 
     private void printGameOver(GameState gameState) {
@@ -99,6 +126,7 @@ public class Game {
                 betNum = Integer.parseInt(input);
                 if (user.getMoney() < betNum) throw new Exception();
                 else if (betNum % 100 != 0) throw new Exception();
+                else if (betNum <= 0) throw new Exception();
                 correctInput = true;
             } catch (Exception e) {
                 System.out.println("잘못 입력하셨습니다.");
