@@ -30,6 +30,25 @@ public class Game {
 
     }
 
+    private boolean isOneMoreGame() throws IOException{
+        String input;
+        boolean correctInput = false;
+        boolean result = false;
+        while (!correctInput) {
+            input = userInput();
+            if (input.equals("y")) {
+                result = true;
+                correctInput = true;
+            } else if (input.equals("n")) {
+                result = false;
+                correctInput = true;
+            }else{
+                System.out.println("잘못 입력하셨습니다.");
+            }
+        }
+        return result;
+    }
+
     private void printGameOver(GameState gameState) {
         if (gameState.equals(GameState.LOSE)) System.out.println("당신의 패배입니다.");
         else if (gameState.equals(GameState.WIN)) System.out.println("당신의 승리입니다.");
