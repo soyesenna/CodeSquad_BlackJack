@@ -36,8 +36,15 @@ public class Game {
                 while (dealer.sumCards() <= 16) dealer.getCard(deck.pollLast());
             }
         }
+        gameState = checkGameResult();
+        if (gameState.equals(GameState.BLACKJACK)) {
+            user.plusMoney(betMoney * 2);
+            gameState = GameState.WIN;
+        }
+        else if (gameState.equals(GameState.WIN)) user.plusMoney(betMoney);
+        else user.minusMoney(betMoney);
 
-
+        GameResults.updateGameResult(gameState);
 
         return nextBet;
     }
@@ -45,7 +52,12 @@ public class Game {
     private GameState checkGameResult() {
         GameState result;
         if (dealer.sumCards() == 21) result = GameState.LOSE;
-        else if()
+        else if(user.sumCards() == 21) result = GameState.BLACKJACK;
+        else if (dealer.sumCards() > 21) result = GameState.WIN;
+        else if (user.sumCards() > dealer.sumCards()) result = GameState.WIN;
+        else if (user.sumCards() < dealer.sumCards()) result = GameState.LOSE;
+        else result = GameState.DRAW;
+        return result;
     }
 
     private boolean isGetOneMoreCard() throws IOException{
