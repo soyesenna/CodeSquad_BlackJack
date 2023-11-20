@@ -1,7 +1,6 @@
-package com.codesquad.blackjack;
+package com.codesquad.blackjack.v1;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 
 public class Game {

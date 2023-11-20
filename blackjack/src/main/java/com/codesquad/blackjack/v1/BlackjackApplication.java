@@ -1,4 +1,4 @@
-package com.codesquad.blackjack;
+package com.codesquad.blackjack.v1;
 
 public class BlackjackApplication {
 
