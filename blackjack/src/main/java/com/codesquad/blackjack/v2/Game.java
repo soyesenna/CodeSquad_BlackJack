@@ -2,6 +2,7 @@ package com.codesquad.blackjack.v2;
 
 import java.io.*;
 import java.util.*;
+
 public class Game {
 
     private Deck deck;
@@ -11,15 +12,35 @@ public class Game {
     private int nowRound;
     private final int betMoney;
 
-    public int startGame() throws IOException{
+    public int startGame() throws IOException {
         if (nowRound == 0) {
             return betting();
         }
-        while ()
-        user.getCard(deck.pollLast());
-        dealer.getCard(deck.pollLast());
-        printNowUserState();
+        GameState gameState = GameState.DOING;
+        while (gameState.equals(GameState.DOING)) {
+            user.getCard(deck.pollLast());
+            printNowUserState();
+            gameState = checkOver();
+            if (gameState.equals(GameState.LOSE)) {
+                user.minusMoney(betMoney);
+                printGameOver(gameState);
+            }
+            if (dealer.sumCards() <= 16) dealer.getCard(deck.pollLast());
+        }
 
+    }
+
+    private void printGameOver(GameState gameState) {
+        if (gameState.equals(GameState.LOSE)) System.out.println("당신의 패배입니다.");
+        else if (gameState.equals(GameState.WIN)) System.out.println("당신의 승리입니다.");
+        else if (gameState.equals(GameState.DRAW)) System.out.println("무승부입니다.");
+        System.out.print("현재 남은 자산: ");
+        System.out.println(user.getMoney());
+    }
+
+    private GameState checkOver() {
+        if (user.sumCards() >= 22) return GameState.LOSE;
+        return GameState.WIN;
     }
 
     private void printNowUserState() {
@@ -35,6 +56,7 @@ public class Game {
         sb.append(user.sumCards());
         sb.append("\n");
     }
+
     private void addSbUserCards(StringBuilder sb) {
         sb.append("플레이어: ");
         for (Card card : user.getNowCards()) {
@@ -46,7 +68,7 @@ public class Game {
     }
 
 
-    private int betting() throws IOException{
+    private int betting() throws IOException {
         System.out.print("얼마를 거시겠습니까? ");
 
         String input;
@@ -59,14 +81,14 @@ public class Game {
                 if (user.getMoney() < betNum) throw new Exception();
                 else if (betNum % 100 != 0) throw new Exception();
                 correctInput = true;
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("잘못 입력하셨습니다.");
             }
         }
         return betNum;
     }
 
-    private String userInput() throws IOException{
+    private String userInput() throws IOException {
         String input = br.readLine();
         return input;
     }

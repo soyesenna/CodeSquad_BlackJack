@@ -48,4 +48,12 @@ public class Player {
         return new ArrayList<>(nowCards);
     }
 
+    public void plusMoney(int money) {
+        this.money += money;
+    }
+
+    public void minusMoney(int money) {
+        this.money -= money;
+    }
+
 }
