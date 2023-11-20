@@ -15,6 +15,14 @@ public class BlackjackApplicationV2 {
         System.out.print("현재 재산: ");
         System.out.println(user.getMoney());
 
+        doGame(user, dealer, deck);
+
+        StringBuilder sb = new StringBuilder();
+        addGameResult(sb, user);
+        System.out.println(sb.toString());
+    }
+
+    private static void doGame(Player user, Player dealer, Deck deck) throws Exception{
         int nowRound = 0;
 
         Game game = new Game(deck, user, dealer, nowRound, 0);
@@ -29,10 +37,6 @@ public class BlackjackApplicationV2 {
             if (user.getMoney() == 0) break;
             if (deck.cardCount() <= 10) deck.getNewDeck();
         }
-
-        StringBuilder sb = new StringBuilder();
-        addGameResult(sb, user);
-        System.out.println(sb.toString());
     }
 
     private static void addGameResult(StringBuilder sb, Player user) {
