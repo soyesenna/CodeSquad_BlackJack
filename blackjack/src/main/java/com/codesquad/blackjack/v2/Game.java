@@ -34,6 +34,7 @@ public class Game {
             if (!isGetOneMoreCard()) {
                 gameState = GameState.DONE;
                 while (dealer.sumCards() <= 16) dealer.getCard(deck.pollLast());
+                printNowDealerState();
             }
         }
         gameState = checkGameResult();
@@ -44,9 +45,35 @@ public class Game {
         else if (gameState.equals(GameState.WIN)) user.plusMoney(betMoney);
         else user.minusMoney(betMoney);
 
+        printGameOver(gameState);
+        if (isOneMoreGame()) nextBet = betting();
+
         GameResults.updateGameResult(gameState);
 
         return nextBet;
+    }
+
+    private void printNowDealerState() {
+        StringBuilder sb = new StringBuilder();
+        addDealerCards(sb);
+        addDealerSum(sb);
+        System.out.print(sb.toString());
+    }
+
+    private void addDealerCards(StringBuilder sb) {
+        sb.append("딜러: ");
+        for (Card card : dealer.getNowCards()) {
+            sb.append("[");
+            sb.append(card.getCardValue());
+            sb.append("]");
+        }
+        sb.append("\n");
+    }
+
+    private void addDealerSum(StringBuilder sb) {
+        sb.append("딜러의 카드 합계는 ");
+        sb.append(dealer.sumCards());
+        sb.append("입니다.\n");
     }
 
     private GameState checkGameResult() {
@@ -99,14 +126,14 @@ public class Game {
 
     private GameState checkOver() {
         if (user.sumCards() >= 22) return GameState.LOSE;
-        return GameState.WIN;
+        return GameState.DOING;
     }
 
     private void printNowUserState() {
         StringBuilder sb = new StringBuilder();
         addSbUserCards(sb);
         addSbUserTotalNum(sb);
-        System.out.println(sb.toString());
+        System.out.print(sb.toString());
 
     }
 
@@ -128,12 +155,11 @@ public class Game {
 
 
     private int betting() throws IOException {
-        System.out.print("얼마를 거시겠습니까? ");
-
         String input;
         boolean correctInput = false;
         int betNum = 0;
         while (!correctInput) {
+            System.out.print("얼마를 거시겠습니까? ");
             input = userInput();
             if (input.equals("codesquad")) continue;
             try {
@@ -165,7 +191,7 @@ public class Game {
             sb.append("]");
         }
         sb.append("\n");
-        System.out.println(sb.toString());
+        System.out.print(sb.toString());
 
     }
 

@@ -42,4 +42,8 @@ public class Deck {
     public Deck copyDeck() {
         return new Deck(this.deck);
     }
+
+    public int cardCount() {
+        return this.deck.size();
+    }
 }

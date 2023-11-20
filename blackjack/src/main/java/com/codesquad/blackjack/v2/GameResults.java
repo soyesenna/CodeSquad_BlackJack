@@ -14,4 +14,13 @@ public class GameResults {
     public static void updateGameResult(GameState gameState) {
         gameResult.replace(gameState, gameResult.get(gameState) + 1);
     }
+
+    public static Integer getResultToState(GameState gameState) {
+        try {
+            return gameResult.get(gameState);
+        } catch (Exception e) {
+            System.out.println("존재하지 않는 game state입니다.");
+        }
+        return null;
+    }
 }
