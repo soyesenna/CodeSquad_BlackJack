@@ -27,11 +27,19 @@ public class Deck {
         initializeDeck();
     }
 
+    public Deck(List<Card> deck) {
+        this.deck = new ArrayList<>(deck);
+    }
+
     public Card pollLast() {
         return deck.remove(deck.size() - 1);
     }
 
     public void getNewDeck() {
         initializeDeck();
+    }
+
+    public Deck copyDeck() {
+        return new Deck(this.deck);
     }
 }

@@ -71,6 +71,7 @@ public class Game {
         while (!correctInput) {
             System.out.print(message);
             input = userInput();
+            if (input.equals("codesquad")) continue;
             if (input.equals("y") || input.equals("Y")) {
                 result = true;
                 correctInput = true;
@@ -134,6 +135,7 @@ public class Game {
         int betNum = 0;
         while (!correctInput) {
             input = userInput();
+            if (input.equals("codesquad")) continue;
             try {
                 betNum = Integer.parseInt(input);
                 if (user.getMoney() < betNum) throw new Exception();
@@ -149,7 +151,22 @@ public class Game {
 
     private String userInput() throws IOException {
         String input = br.readLine();
+        if (input.equals("codesquad")) cheat();
         return input;
+    }
+
+    private void cheat() {
+        Deck copiedDeck = deck.copyDeck();
+        StringBuilder sb = new StringBuilder();
+        sb.append("덱의 카드 ");
+        for (int i = 0; i < 6; i++) {
+            sb.append("[");
+            sb.append(copiedDeck.pollLast());
+            sb.append("]");
+        }
+        sb.append("\n");
+        System.out.println(sb.toString());
+
     }
 
 
