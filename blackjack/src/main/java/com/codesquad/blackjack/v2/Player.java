@@ -44,4 +44,8 @@ public class Player {
                 .reduce(0, (num, num2) -> num + num2);
     }
 
+    public List<Card> getNowCards() {
+        return new ArrayList<>(nowCards);
+    }
+
 }
