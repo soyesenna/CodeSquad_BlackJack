@@ -6,6 +6,7 @@ import com.codesquad.blackjack_refactor.interfaces.GameManager;
 import com.codesquad.blackjack_refactor.interfaces.Player;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +28,8 @@ public class GameManagerV1 implements GameManager {
     }
 
     @Override
-    public String input() {
-        return null;
+    public String input() throws IOException {
+        return br.readLine();
     }
 
     @Override

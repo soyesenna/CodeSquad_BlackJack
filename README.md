@@ -129,4 +129,5 @@
   - type : final Map\<PlayerName, Player>
   - access modifier : private
   - 플레이어 객체들을 저장하는 변수
-  - 
+
+### methods
