@@ -19,4 +19,7 @@ public interface GameManager {
     void getCardFromDeck();
 
     void addWinLoseCountWithPlayerName(PlayerName winner);
+    void addPlayerCardsToPrint(StringBuilder sb, PlayerName player);
+
+    void addWinCountToPrint(StringBuilder sb);
 }

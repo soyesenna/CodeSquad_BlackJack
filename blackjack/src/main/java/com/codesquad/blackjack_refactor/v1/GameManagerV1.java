@@ -36,7 +36,43 @@ public class GameManagerV1 implements GameManager {
 
     @Override
     public void printGameStatus(int round, PlayerName winner) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Game ");
+        sb.append(round);
+        sb.append("\n");
+        addPlayerCardsToPrint(sb, PlayerName.USER);
+        addPlayerCardsToPrint(sb, PlayerName.DEALER);
 
+        if (winner.equals(PlayerName.USER)) sb.append("당신이 이겼습니다.\n");
+        else if (winner.equals(PlayerName.DEALER)) sb.append("딜러가 이겼습니다.\n");
+        else sb.append("비겼습니다.\n");
+        addWinCountToPrint(sb);
+
+        System.out.println(sb.toString());
+    }
+
+    @Override
+    public void addWinCountToPrint(StringBuilder sb) {
+        sb.append("현재 전적: ");
+        sb.append(winLoseCount.get("WIN"));
+        sb.append("승 ");
+        if (winLoseCount.get("DRAW") > 0) {
+            sb.append(winLoseCount.get("DRAW"));
+            sb.append("무 ");
+        }
+        sb.append(winLoseCount.get("LOSE"));
+        sb.append("패\n");
+    }
+
+    @Override
+    public void addPlayerCardsToPrint(StringBuilder sb, PlayerName playerName) {
+        sb.append(playerName.equals(PlayerName.USER) ? "You : " : "Dealer : ");
+        for (Card card : players.get(playerName).getAccumCards()) {
+            sb.append("[");
+            sb.append(card.getNum());
+            sb.append("] ");
+        }
+        sb.append("\n");
     }
 
     @Override
@@ -64,12 +100,21 @@ public class GameManagerV1 implements GameManager {
                 addWinLoseCountWithPlayerName(nowResult);
                 printGameStatus(nowRound, nowResult);
                 String input = input();
-                if (checkInput(input).equals(InputStatus.GOOD)) {
-                    if (input.equals("n") || input.equals("N")) continueGame = false;
-                } else throw new IOException("잘못된 입력입니다");
+                InputStatus inputStatus = InputStatus.BAD;
+                do {
+                    inputStatus = checkInput(input);
+                    if (inputStatus.equals(InputStatus.GOOD)) {
+                        if (input.equals("n") || input.equals("N")) continueGame = false;
+                    }
+                    else {
+                        System.out.println("잘못된 입력입니다.");
+                        input = input();
+                    }
+                } while (inputStatus.equals(InputStatus.BAD));
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+            nowRound++;
         }
     }
 
