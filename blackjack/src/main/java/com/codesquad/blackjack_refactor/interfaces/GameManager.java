@@ -8,13 +8,15 @@ import java.io.IOException;
 
 public interface GameManager {
 
-    void printGameStatus(int round);
+    void printGameStatus(int round, PlayerName winner);
     String input() throws IOException;
     InputStatus checkInput(String input);
 
-    void doGame();
+    void doGame() throws IOException, VersionNotCorrectException;
 
     PlayerName checkGameWinner(Player user, Player dealer) throws VersionNotCorrectException;
 
     void getCardFromDeck();
+
+    void addWinLoseCountWithPlayerName(PlayerName winner);
 }

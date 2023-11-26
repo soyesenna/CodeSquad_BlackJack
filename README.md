@@ -42,8 +42,8 @@
   - Card를 받아서 cards에 추가한다
 
 ## GameManager
-- printGameStatus(int)
-  - parameter : int
+- printGameStatus(int, PlayerName)
+  - parameter : int, PlayerName
   - return : void
   - 현재 게임의 상태를 출력해준다
 - input()
@@ -61,6 +61,7 @@
 - checkGameWinenr(Player, Player)
   - parameter : Player, Player
   - return : PlayerName
+  - throws : VersionNotCorrectException
   - 두 플레이어를 받아서 마지막 카드를 보고 게임의 승자를 결정한다
 - getCardFromDeck()
   - parameter : none

@@ -19,16 +19,23 @@ public class GameManagerV1 implements GameManager {
     private final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private final Map<PlayerName, Player> players;
     private Deck deck;
+    private Map<String, Integer> winLoseCount;
 
     public GameManagerV1() {
         players = new HashMap<>();
         deck = new DeckV1();
+        winLoseCount = new HashMap<>();
+
+        winLoseCount.put("WIN", 0);
+        winLoseCount.put("LOSE", 0);
+        winLoseCount.put("DRAW", 0);
+
         players.put(PlayerName.DEALER, new PlayerV1());
         players.put(PlayerName.USER, new PlayerV1());
     }
 
     @Override
-    public void printGameStatus(int round) {
+    public void printGameStatus(int round, PlayerName winner) {
 
     }
 
@@ -39,19 +46,39 @@ public class GameManagerV1 implements GameManager {
     }
 
     @Override
-    public InputStatus checkInput(String input) {
-        return null;
+    public InputStatus checkInput(String input){
+        InputStatus result = InputStatus.BAD;
+        if (input.equals("N") || input.equals("n") || input.equals("y") || input.equals("Y")) result = InputStatus.GOOD;
+        return result;
     }
 
     @Override
-    public void doGame() {
+    public void doGame(){
         int nowRound = 1;
         boolean continueGame = true;
 
         while (continueGame) {
             getCardFromDeck();
-
+            try {
+                PlayerName nowResult = checkGameWinner(players.get(PlayerName.USER), players.get(PlayerName.DEALER));
+                addWinLoseCountWithPlayerName(nowResult);
+                printGameStatus(nowRound, nowResult);
+                String input = input();
+                if (checkInput(input).equals(InputStatus.GOOD)) {
+                    if (input.equals("n") || input.equals("N")) continueGame = false;
+                } else throw new IOException("잘못된 입력입니다");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
+    }
+
+    @Override
+    public void addWinLoseCountWithPlayerName(PlayerName winner) {
+        if (winner.equals(PlayerName.USER)) winLoseCount.replace("WIN", winLoseCount.get("WIN") + 1);
+        else if (winner.equals(PlayerName.DEALER))
+            winLoseCount.replace("LOSE", winLoseCount.get("LOSE") + 1);
+        else winLoseCount.replace("DRAW", winLoseCount.get("DRAW") + 1);
     }
 
     @Override
@@ -66,6 +93,8 @@ public class GameManagerV1 implements GameManager {
 
     현재 게임의 승자를 판단해서 PlayerName으로 리턴해주는 메서드
     무승부일경우 PlayerName.NONE이 리턴된다
+
+    만약 게임 버전이 맞지 않을경우 VersionNotCorrectException을 던진다
      */
     @Override
     public PlayerName checkGameWinner(Player user, Player dealer) throws VersionNotCorrectException {
