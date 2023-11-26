@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public interface GameManager {
 
-    void printGameStatus(int round, PlayerName winner);
+    void printGameStatus(int round, PlayerName winner) throws VersionNotCorrectException;
     String input() throws IOException;
     InputStatus checkInput(String input);
 

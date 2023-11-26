@@ -37,8 +37,21 @@ public class GameManagerV2 implements GameManager {
     }
 
     @Override
-    public void printGameStatus(int round, PlayerName user) {
-
+    public void printGameStatus(int round, PlayerName user) throws VersionNotCorrectException{
+        StringBuilder sb = new StringBuilder();
+        sb.append("Game ");
+        sb.append(round);
+        sb.append("\n");
+        sb.append("플레이어: ");
+        addPlayerCardsToPrint(sb, user);
+        try {
+            sb.append("총합: ");
+            sb.append(((PlayerV2) players.get(user)).sumCardNums());
+            sb.append("\n");
+        } catch (Exception e) {
+            throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
+        }
+        System.out.print(sb.toString());
     }
 
     /*
@@ -74,15 +87,116 @@ public class GameManagerV2 implements GameManager {
         int nowBet = 0;
         boolean continueGame = true;
         while (continueGame) {
+            try {
+                ((PlayerV2) players.get(PlayerName.USER)).initializeCard();
+                ((PlayerV2) players.get(PlayerName.DEALER)).initializeCard();
+            } catch (Exception e) {
+                throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
+            }
+            if (deck instanceof DeckV2) {
+                if (((DeckV2) deck).nowCardNum() <= 10) deck.initialize();
+            }
             nowBet = bet();
             getCardFromDeck();
+            printGameStatus(nowRount, PlayerName.USER);
             while (getMoreCard()) {
                 getCardFromDeck(PlayerName.USER);
+                printGameStatus(nowRount, PlayerName.USER);
                 try {
-                    if ()
+                    if (((PlayerV2)players.get(PlayerName.USER)).sumCardNums() > 21) break;
+                    if (((PlayerV2) players.get(PlayerName.DEALER)).sumCardNums() <= 16)
+                        getCardFromDeck(PlayerName.DEALER);
+                } catch (Exception e) {
+                    throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
                 }
             }
+            PlayerName result = null;
+            if (blackjack()) {
+                nowBet *= 2;
+                result = PlayerName.USER;
+            }else result = checkGameWinner(players.get(PlayerName.USER), players.get(PlayerName.DEALER));
+            endRound(result, nowBet);
+            continueGame = isContinueGame();
+            nowRount++;
         }
+        StringBuilder sb = new StringBuilder();
+        addWinCountToPrint(sb);
+        try {
+            sb.append(((PlayerV2) players.get(PlayerName.USER)).getMoney());
+            sb.append("원의 자산이 남았습니다.\n");
+        } catch (Exception e) {
+            throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
+        }
+        sb.append("플레이 해 주셔서 감사합니다.\n");
+        System.out.println(sb.toString());
+    }
+
+    /*
+    parameter : none
+    return : boolean
+    throws : IOException
+
+    게임을 다시 할건지 입력받는 ㄴ메서드
+     */
+    private boolean isContinueGame() throws IOException{
+        InputStatus inputStatus = InputStatus.BAD;
+        boolean result = false;
+        while (!inputStatus.equals(InputStatus.GOOD)) {
+            System.out.print("한 게임 더 하시겠습니까? (Y / N) ");
+            String input = input();
+            inputStatus = checkInput(input);
+            if (inputStatus.equals(InputStatus.GOOD)) {
+                result = checkYorN(input);
+            }else System.out.println("잘못 입력하셨습니다.");
+        }
+        return result;
+    }
+
+    /*
+    parameter : none
+    return : boolean
+    throws : VersionNotCorrectException
+
+    게임의 결과가 블랙직인지 판별해주는 메서드
+     */
+    private boolean blackjack() throws VersionNotCorrectException{
+        if (players.get(PlayerName.USER) instanceof PlayerV2) {
+            if (((PlayerV2) players.get(PlayerName.USER)).sumCardNums() == 21) return true;
+        } else throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
+        return false;
+    }
+
+    /*
+    parameter : PlayerName, int
+    return : void
+    throws : VersionNotCorrectException
+
+    게임의 한 라운드를 마무리하는 메서드
+    승리 여부와 잔액을 출력해준다
+     */
+    private void endRound(PlayerName winner, int nowBet) throws VersionNotCorrectException{
+        StringBuilder sb = new StringBuilder();
+        sb.append("딜러: ");
+        addPlayerCardsToPrint(sb, PlayerName.DEALER);
+        if (winner.equals(PlayerName.USER)) {
+            sb.append("당신의 승리입니다.");
+            winLoseCount.replace("WIN", winLoseCount.get("WIN") + 1);
+        } else if (winner.equals(PlayerName.DEALER)) {
+            sb.append("당신의 패배입니다.");
+            nowBet = -nowBet;
+            winLoseCount.replace("LOSE", winLoseCount.get("LOSE") + 1);
+        } else {
+            sb.append("무승부입니다.");
+            winLoseCount.replace("DRAW", winLoseCount.get("DRAW") + 1);
+            nowBet = 0;
+        }
+        try {
+            ((PlayerV2) players.get(PlayerName.USER)).addMoney(nowBet);
+            sb.append("현재 재산: " + ((PlayerV2) players.get(PlayerName.USER)).getMoney());
+        } catch (Exception e) {
+            throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
+        }
+        System.out.println(sb.toString());
     }
 
     /*
@@ -133,6 +247,12 @@ public class GameManagerV2 implements GameManager {
         System.out.println();
     }
 
+    /*
+    parameter : String
+    return : boolean
+
+    parameter로 받은 String이 Y, N, y, n 중 무엇인지 판별하는 메서드
+     */
     private boolean checkYorN(String str) {
         boolean result = false;
         if (str.equals("y") || str.equals("Y")) result = true;
@@ -186,9 +306,28 @@ public class GameManagerV2 implements GameManager {
         }
     }
 
+    /*
+    parameter : Player, Player
+    return : PlayerName
+    throws : VersionNotCorrectException
+
+    현재 라운드의 승자를 정해 PlayerName으로 리턴해주는 메서드
+     */
     @Override
     public PlayerName checkGameWinner(Player user, Player dealer) throws VersionNotCorrectException {
-        return null;
+        PlayerV2 userV2 = null;
+        PlayerV2 dealerV2 = null;
+        if (user instanceof PlayerV2) userV2 = ((PlayerV2) user);
+        if (dealer instanceof PlayerV2) dealerV2 = ((PlayerV2) dealer);
+        if (userV2 == null || dealerV2 == null) throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
+
+        PlayerName result = PlayerName.NONE;
+        if (userV2.sumCardNums() > 21) result = PlayerName.DEALER;
+        else if (dealerV2.sumCardNums() == 21) result = PlayerName.DEALER;
+        else if (userV2.sumCardNums() > dealerV2.sumCardNums()) result = PlayerName.USER;
+        else if (userV2.sumCardNums() < dealerV2.sumCardNums()) result = PlayerName.DEALER;
+
+        return result;
     }
 
     /*
@@ -219,13 +358,38 @@ public class GameManagerV2 implements GameManager {
 
     }
 
+    /*
+    parameter : StringBuilder, PlayerName
+    return : void
+
+    StringBuilder에 players에서 PlayerName으로 Player객체를 받아서 Player가 가지고 있는
+    누적 카드를 추가한다
+     */
     @Override
     public void addPlayerCardsToPrint(StringBuilder sb, PlayerName player) {
-
+        for (Card card : players.get(player).getAccumCards()) {
+            sb.append("[");
+            sb.append(card.getNum());
+            sb.append("] ");
+        }
+        sb.append("\n");
     }
 
+    /*
+    parameter : StringBuilder
+    return : void
+
+    승무패기록을 StringBuilder에 추가해주는 메서드
+     */
     @Override
     public void addWinCountToPrint(StringBuilder sb) {
-
+        sb.append(winLoseCount.get("WIN"));
+        sb.append("승 ");
+        if (winLoseCount.get("DRAW") > 0){
+            sb.append(winLoseCount.get("DRAW"));
+            sb.append("무 ");
+        }
+        sb.append(winLoseCount.get("LOSE"));
+        sb.append("패로 ");
     }
 }

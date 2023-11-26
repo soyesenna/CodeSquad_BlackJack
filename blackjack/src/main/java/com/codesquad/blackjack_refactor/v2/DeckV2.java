@@ -8,6 +8,10 @@ import java.util.*;
 public class DeckV2 implements Deck {
     private Deque<Card> deck;
 
+    public DeckV2() {
+        initialize();
+    }
+
     @Override
     public void initialize() {
         List<Card> tmp = new ArrayList<>();
@@ -29,5 +33,9 @@ public class DeckV2 implements Deck {
     public List<Card> cheat() {
         List<Card> toReturn = new ArrayList<>(deck);
         return toReturn.subList(deck.size() - 7, deck.size() - 1);
+    }
+
+    public int nowCardNum() {
+        return deck.size();
     }
 }

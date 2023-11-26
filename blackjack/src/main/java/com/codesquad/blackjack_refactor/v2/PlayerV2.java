@@ -34,4 +34,12 @@ public class PlayerV2 implements Player {
         int result = cards.stream().map((Card c1) -> c1.getNum()).reduce(0, (Integer a, Integer b) -> a + b);
         return result;
     }
+
+    public void addMoney(int money) {
+        this.money += money;
+    }
+
+    public void initializeCard() {
+        cards = new ArrayList<>();
+    }
 }
