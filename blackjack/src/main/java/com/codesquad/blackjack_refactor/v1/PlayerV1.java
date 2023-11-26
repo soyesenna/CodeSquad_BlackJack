@@ -23,4 +23,8 @@ public class PlayerV1 implements Player {
     public void addCard(Card card) {
         this.cards.add(card);
     }
+
+    public Card getLastCard() {
+        return cards.get(cards.size() - 1);
+    }
 }

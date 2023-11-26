@@ -127,9 +127,13 @@
   - cards 변수를 복사해서 리턴한다 
 - addCard(Card)
   - Override
-  - pameter : Card
+  - parameter : Card
   - return : void
   - Card를 parameter로 받아서 cards에 추가한다
+- getLastCard()
+  - parameter : none
+  - return : Card
+  - 누적된 카드의 맨 마지막 카드를 리턴해준다
   
 ## GameManagerV1
 - implements GameManager
@@ -148,4 +152,8 @@
   - 덱을 저장하는 변수
 
 ### methods
-- 
+
+
+## 사용할 Exception
+## VersionNotCorrectException
+- 버전이 맞지 않을때 던지는 예외

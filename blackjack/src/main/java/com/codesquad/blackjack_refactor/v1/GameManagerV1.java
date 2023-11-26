@@ -1,7 +1,9 @@
 package com.codesquad.blackjack_refactor.v1;
 
+import com.codesquad.blackjack_refactor.Card;
 import com.codesquad.blackjack_refactor.enums.InputStatus;
 import com.codesquad.blackjack_refactor.enums.PlayerName;
+import com.codesquad.blackjack_refactor.exceptions.VersionNotCorrectException;
 import com.codesquad.blackjack_refactor.interfaces.Deck;
 import com.codesquad.blackjack_refactor.interfaces.GameManager;
 import com.codesquad.blackjack_refactor.interfaces.Player;
@@ -58,8 +60,26 @@ public class GameManagerV1 implements GameManager {
         players.get(PlayerName.DEALER).addCard(deck.pollLast());
     }
 
+    /*
+    parameter : Player, Player
+    return : PlayerName
+
+    현재 게임의 승자를 판단해서 PlayerName으로 리턴해주는 메서드
+    무승부일경우 PlayerName.NONE이 리턴된다
+     */
     @Override
-    public PlayerName checkGameWinner(Player user, Player dealer) {
-        return null;
+    public PlayerName checkGameWinner(Player user, Player dealer) throws VersionNotCorrectException {
+        Card nowUser, nowDealer = null;
+        PlayerName gameResult = PlayerName.NONE;
+
+        if (user instanceof PlayerV1 && dealer instanceof PlayerV1){
+            nowUser = ((PlayerV1) user).getLastCard();
+            nowDealer = ((PlayerV1) dealer).getLastCard();
+        } else throw new VersionNotCorrectException("게임 버전이 맞지 않습니다!");
+
+        if (nowUser.getNum() > nowDealer.getNum()) gameResult = PlayerName.USER;
+        else if(nowUser.getNum() < nowDealer.getNum()) gameResult = PlayerName.DEALER;
+
+        return gameResult;
     }
 }
