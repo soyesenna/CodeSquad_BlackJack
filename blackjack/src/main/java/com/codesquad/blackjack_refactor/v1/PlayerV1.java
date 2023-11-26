@@ -18,4 +18,9 @@ public class PlayerV1 implements Player {
     public List<Card> getAccumCards() {
         return new ArrayList<>(cards);
     }
+
+    @Override
+    public void addCard(Card card) {
+        this.cards.add(card);
+    }
 }

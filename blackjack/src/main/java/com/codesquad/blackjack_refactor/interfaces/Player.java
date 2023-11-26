@@ -7,4 +7,6 @@ import java.util.List;
 public interface Player {
 
     List<Card> getAccumCards();
+
+    void addCard(Card card);
 }

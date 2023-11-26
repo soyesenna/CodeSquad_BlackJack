@@ -36,10 +36,14 @@
   - parameter : none
   - return : List\<Card>
   - 현재 플레이어가 가진 카드들을 리턴
+- addCard(Card)
+  - parameter : Card
+  - retur : void
+  - Card를 받아서 cards에 추가한다
 
 ## GameManager
-- printGameStatus()
-  - parameter : none
+- printGameStatus(int)
+  - parameter : int
   - return : void
   - 현재 게임의 상태를 출력해준다
 - input()
@@ -58,6 +62,10 @@
   - parameter : Player, Player
   - return : PlayerName
   - 두 플레이어를 받아서 마지막 카드를 보고 게임의 승자를 결정한다
+- getCardFromDeck()
+  - parameter : none
+  - return : void
+  - 카드 덱에서 카드를 뽑아 딜러와 유저에게 준다
 
 ## 사용할 클래스
 
@@ -117,6 +125,11 @@
   - parameter : none
   - return : List\<Card>
   - cards 변수를 복사해서 리턴한다 
+- addCard(Card)
+  - Override
+  - pameter : Card
+  - return : void
+  - Card를 parameter로 받아서 cards에 추가한다
   
 ## GameManagerV1
 - implements GameManager
@@ -129,5 +142,10 @@
   - type : final Map\<PlayerName, Player>
   - access modifier : private
   - 플레이어 객체들을 저장하는 변수
+- deck
+  - type : Deck
+  - access modifier : private
+  - 덱을 저장하는 변수
 
 ### methods
+- 

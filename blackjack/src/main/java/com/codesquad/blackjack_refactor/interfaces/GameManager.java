@@ -7,11 +7,13 @@ import java.io.IOException;
 
 public interface GameManager {
 
-    void printGameStatus();
+    void printGameStatus(int round);
     String input() throws IOException;
     InputStatus checkInput(String input);
 
     void doGame();
 
     PlayerName checkGameWinner(Player user, Player dealer);
+
+    void getCardFromDeck();
 }
