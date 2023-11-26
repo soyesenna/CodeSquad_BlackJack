@@ -62,8 +62,28 @@ public class GameManagerV2 implements GameManager {
         int nowBet = bet();
         boolean continueGame = true;
         while (continueGame) {
-
+            getCardFromDeck();
         }
+    }
+
+    private boolean getMoreCard() throws IOException{
+        boolean correctInput = false;
+        while (!correctInput) {
+            System.out.print("카드를 더 받겠습니까? (Y / N) ");
+            String input = input();
+            if (input.equals("y"))
+        }
+
+    }
+
+    /*
+    parameter : String
+    return : boolean
+
+    parameter로 받은 String이 Y,N,y,n 인지 판별해주는 메서드
+     */
+    private boolean checkYorN(String str) {
+        return str.equals("y") || str.equals("Y") || str.equals("n") || str.equals("N");
     }
 
     /*
