@@ -4,6 +4,7 @@ import com.codesquad.blackjack_refactor.Card;
 import com.codesquad.blackjack_refactor.interfaces.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerV2 implements Player {
@@ -27,5 +28,10 @@ public class PlayerV2 implements Player {
 
     public int getMoney() {
         return money;
+    }
+
+    public int sumCardNums() {
+        int result = cards.stream().map((Card c1) -> c1.getNum()).reduce(0, (Integer a, Integer b) -> a + b);
+        return result;
     }
 }

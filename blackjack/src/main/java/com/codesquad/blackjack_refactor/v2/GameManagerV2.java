@@ -1,5 +1,6 @@
 package com.codesquad.blackjack_refactor.v2;
 
+import com.codesquad.blackjack_refactor.Card;
 import com.codesquad.blackjack_refactor.enums.InputStatus;
 import com.codesquad.blackjack_refactor.enums.PlayerName;
 import com.codesquad.blackjack_refactor.exceptions.VersionNotCorrectException;
@@ -10,7 +11,9 @@ import com.codesquad.blackjack_refactor.interfaces.Player;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameManagerV2 implements GameManager {
@@ -50,41 +53,93 @@ public class GameManagerV2 implements GameManager {
         return br.readLine();
     }
 
-    @Override
-    public InputStatus checkInput(String input) {
-        return null;
-    }
-
-    @Override
-    public void doGame() throws IOException, VersionNotCorrectException {
-        printWelcome();
-        int nowRount = 1;
-        int nowBet = bet();
-        boolean continueGame = true;
-        while (continueGame) {
-            getCardFromDeck();
-        }
-    }
-
-    private boolean getMoreCard() throws IOException{
-        boolean correctInput = false;
-        while (!correctInput) {
-            System.out.print("카드를 더 받겠습니까? (Y / N) ");
-            String input = input();
-            if (input.equals("y"))
-        }
-
-    }
-
     /*
     parameter : String
     return : boolean
 
     parameter로 받은 String이 Y,N,y,n 인지 판별해주는 메서드
      */
-    private boolean checkYorN(String str) {
-        return str.equals("y") || str.equals("Y") || str.equals("n") || str.equals("N");
+    @Override
+    public InputStatus checkInput(String str) {
+        InputStatus result = InputStatus.BAD;
+        if (str.equals("y") || str.equals("Y") || str.equals("n") || str.equals("N")) result = InputStatus.GOOD;
+        else if (str.equals("codesquad")) result = InputStatus.CHEAT;
+        return result;
     }
+
+    @Override
+    public void doGame() throws IOException, VersionNotCorrectException {
+        printWelcome();
+        int nowRount = 1;
+        int nowBet = 0;
+        boolean continueGame = true;
+        while (continueGame) {
+            nowBet = bet();
+            getCardFromDeck();
+            while (getMoreCard()) {
+                getCardFromDeck(PlayerName.USER);
+                try {
+                    if ()
+                }
+            }
+        }
+    }
+
+    /*
+    parameter : none
+    return : boolean
+    throws : IOException
+
+    카드를 하나 더 받을건지 물어보고 입력받는 메서드
+    받을거면 true
+    아니면 false
+    리턴
+     */
+    private boolean getMoreCard() throws IOException, VersionNotCorrectException{
+        InputStatus inputStatus = InputStatus.BAD;
+        boolean result = false;
+        while (!inputStatus.equals(InputStatus.GOOD)) {
+            System.out.print("카드를 더 받겠습니까? (Y / N) ");
+            String input = input();
+            inputStatus = checkInput(input);
+            if (inputStatus.equals(InputStatus.GOOD)) {
+                result = checkYorN(input);
+            }else if (inputStatus.equals(InputStatus.CHEAT)) cheat();
+            else {
+                System.out.println("잘못 입력하셨습니다.");
+            }
+        }
+        return result;
+    }
+
+    /*
+    parameter : none
+    return : void
+    throws : VersionNotCorrectException
+
+    덱의 맨위 카드를 왼쪽부터 순서대로 보여주는 메서드
+     */
+    private void cheat() throws VersionNotCorrectException{
+        System.out.print("덱의 카드 ");
+        try {
+            List<Card> cheatDeck = ((DeckV2) deck).cheat();
+            Collections.reverse(cheatDeck);
+            for (Card card : cheatDeck) {
+                System.out.print("[" + card.getNum() + "]");
+            }
+        } catch (Exception e) {
+            throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
+        }
+        System.out.println();
+    }
+
+    private boolean checkYorN(String str) {
+        boolean result = false;
+        if (str.equals("y") || str.equals("Y")) result = true;
+        return result;
+    }
+
+
 
     /*
     parameter : none

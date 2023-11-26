@@ -25,4 +25,9 @@ public class DeckV2 implements Deck {
     public Card pollLast() {
         return deck.pollLast();
     }
+
+    public List<Card> cheat() {
+        List<Card> toReturn = new ArrayList<>(deck);
+        return toReturn.subList(deck.size() - 7, deck.size() - 1);
+    }
 }
