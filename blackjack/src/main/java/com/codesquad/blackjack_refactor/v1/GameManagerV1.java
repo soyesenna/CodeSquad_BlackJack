@@ -48,6 +48,7 @@ public class GameManagerV1 implements GameManager {
 
         while (continueGame) {
             getCardFromDeck();
+
         }
     }
 
