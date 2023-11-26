@@ -59,7 +59,11 @@ public class GameManagerV2 implements GameManager {
     public void doGame() throws IOException, VersionNotCorrectException {
         printWelcome();
         int nowRount = 1;
-        int nowBet = 0;
+        int nowBet = bet();
+        boolean continueGame = true;
+        while (continueGame) {
+
+        }
     }
 
     /*
@@ -112,9 +116,27 @@ public class GameManagerV2 implements GameManager {
         return null;
     }
 
+    /*
+    parameter : none
+    return : void
+
+    덱에서 카드를 뽑아 유저와 딜러 두명에게 각각 주는 메서드
+     */
     @Override
     public void getCardFromDeck() {
+        getCardFromDeck(PlayerName.USER);
+        getCardFromDeck(PlayerName.DEALER);
+    }
 
+    /*
+    parameter : PlayerName
+    return : void
+
+    parameter로 PlayerName을 받아 players에서 Player객체를 꺼낸다음 해당 객체에
+    카드를 추가해주는 메서드
+     */
+    public void getCardFromDeck(PlayerName playerName) {
+        players.get(playerName).addCard(deck.pollLast());
     }
 
     @Override
