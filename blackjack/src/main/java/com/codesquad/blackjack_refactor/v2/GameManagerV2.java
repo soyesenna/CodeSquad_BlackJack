@@ -62,9 +62,33 @@ public class GameManagerV2 implements GameManager {
         int nowBet = 0;
     }
 
-    private int bet() throws IOException{
-        String betInput = input();
+    /*
+    parameter : none
+    return : int
+    throws : IOExcetion, VersionNotCorrectException, NumberFormatException
 
+    사용자에게 100원 단위의 양수를 입력받아 배팅 금액으로 저장해 리턴해주는 메서드
+     */
+    private int bet() throws IOException, VersionNotCorrectException{
+        int nowPlayerMoney = 0;
+        int bet = Integer.MAX_VALUE;
+        while (nowPlayerMoney < bet) {
+            System.out.print("얼마를 거시겠습니까? ");
+            String betInput = input();
+            try {
+                nowPlayerMoney = ((PlayerV2) players.get(PlayerName.USER)).getMoney();
+            } catch (Exception e) {
+                throw new VersionNotCorrectException("게임 버전이 맞지 않습니다.");
+            }
+            try {
+                bet = Integer.parseInt(betInput);
+            } catch (NumberFormatException e) {}
+            if (nowPlayerMoney < bet || bet % 100 != 0 || bet < 0) {
+                System.out.println("잘못 입력하셨습니다.");
+                bet = Integer.MAX_VALUE;
+            }
+        }
+        return bet;
     }
 
     /*
