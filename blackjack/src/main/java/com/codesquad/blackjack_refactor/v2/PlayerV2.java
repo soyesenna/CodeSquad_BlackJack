@@ -9,7 +9,7 @@ import java.util.List;
 public class PlayerV2 implements Player {
 
     private List<Card> cards;
-    private int money = 0;
+    private int money = 1000;
 
     public PlayerV2() {
         cards = new ArrayList<>();
@@ -23,5 +23,9 @@ public class PlayerV2 implements Player {
     @Override
     public void addCard(Card card) {
         cards.add(card);
+    }
+
+    public int getMoney() {
+        return money;
     }
 }
