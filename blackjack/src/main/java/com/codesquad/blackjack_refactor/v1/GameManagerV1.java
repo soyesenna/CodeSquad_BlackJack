@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameManagerV1 implements GameManager {
-
     private final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private final Map<PlayerName, Player> players;
     private Deck deck;
@@ -34,6 +33,12 @@ public class GameManagerV1 implements GameManager {
         players.put(PlayerName.USER, new PlayerV1());
     }
 
+    /*
+    parameter : int, PlayerName
+    return : void
+
+    현재 게임의 상태를 출력해주는 메서드
+     */
     @Override
     public void printGameStatus(int round, PlayerName winner) {
         StringBuilder sb = new StringBuilder();
@@ -51,6 +56,12 @@ public class GameManagerV1 implements GameManager {
         System.out.println(sb.toString());
     }
 
+    /*
+    paramter : StringBuilder
+    return : void
+
+    현재 전적을 StringBuilder에 추가해주는 메서드
+     */
     @Override
     public void addWinCountToPrint(StringBuilder sb) {
         sb.append("현재 전적: ");
@@ -64,6 +75,13 @@ public class GameManagerV1 implements GameManager {
         sb.append("패\n");
     }
 
+    /*
+    parameter : StringBulilder, PlayerName
+    return : void
+
+    StringBuilder에 players에서 PlayerName으로 Player객체를 받아서 Player가 가지고 있는
+    누적 카드를 추가한다
+     */
     @Override
     public void addPlayerCardsToPrint(StringBuilder sb, PlayerName playerName) {
         sb.append(playerName.equals(PlayerName.USER) ? "You : " : "Dealer : ");
@@ -75,12 +93,27 @@ public class GameManagerV1 implements GameManager {
         sb.append("\n");
     }
 
+    /*
+    parameter : none
+    return : String
+
+    유저의 입력을 받는 메서드
+     */
     @Override
     public String input() throws IOException {
         System.out.print("한 게임 더 하시겠습니까? (Y / N) ");
         return br.readLine();
     }
 
+    /*
+    parameter : String
+    return : InputStatus
+
+    유저의 입력이 올바른지 검사하는 메서드
+    옳은경우 InputStatus.GOOD
+    옳지 않은경우 InputStatus.BAD
+    리턴
+     */
     @Override
     public InputStatus checkInput(String input){
         InputStatus result = InputStatus.BAD;
@@ -88,6 +121,12 @@ public class GameManagerV1 implements GameManager {
         return result;
     }
 
+    /*
+    parameter : none
+    return : void
+
+    게임의 진행을 총괄하는 메서드
+     */
     @Override
     public void doGame(){
         int nowRound = 1;
@@ -118,6 +157,12 @@ public class GameManagerV1 implements GameManager {
         }
     }
 
+    /*
+    parameter : PlayerName
+    return : void
+
+    winner를 PlayerName으로 받아서 winLoseCount에 승패 여부를 기록하는 메서드
+     */
     @Override
     public void addWinLoseCountWithPlayerName(PlayerName winner) {
         if (winner.equals(PlayerName.USER)) winLoseCount.replace("WIN", winLoseCount.get("WIN") + 1);
@@ -126,6 +171,12 @@ public class GameManagerV1 implements GameManager {
         else winLoseCount.replace("DRAW", winLoseCount.get("DRAW") + 1);
     }
 
+    /*
+    parameter : none
+    return : void
+
+    덱에서 마지막 카드를 뽑아 딜러와 유저에게 카드를 주는 메서드
+     */
     @Override
     public void getCardFromDeck() {
         players.get(PlayerName.USER).addCard(deck.pollLast());
