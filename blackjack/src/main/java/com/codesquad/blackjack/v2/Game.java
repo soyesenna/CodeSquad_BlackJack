@@ -28,7 +28,8 @@ public class Game {
                 if (isOneMoreGame()) {
                     nextBet = betting();
                 }
-                continue;
+                GameResults.updateGameResult(GameState.LOSE);
+                return nextBet;
             }
             if (dealer.sumCards() <= 16) dealer.getCard(deck.pollLast());
             if (!isGetOneMoreCard()) {
